@@ -45,9 +45,9 @@ export default function<T: {}>(
     }
 
     handleOrientationChange = orientation => {
-      InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
         this.setState({ isLandscape: orientation === "LANDSCAPE" });
-      });
+      }, 0);
     };
 
     render() {
