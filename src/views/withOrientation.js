@@ -1,8 +1,9 @@
 // @flow
 
 import * as React from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, InteractionManager } from 'react-native';
 import hoistNonReactStatic from 'hoist-non-react-statics';
+import Orientation from 'react-native-orientation';
 
 type WindowDimensions = {
   width: number,
@@ -34,16 +35,19 @@ export default function<T: {}>(
     }
 
     componentDidMount() {
-      Dimensions.addEventListener('change', this.handleOrientationChange);
+      Orientation.addOrientationListener(this.handleOrientationChange);
+
     }
 
     componentWillUnmount() {
-      Dimensions.removeEventListener('change', this.handleOrientationChange);
+      Orientation.removeOrientationListener(this.handleOrientationChange);
+
     }
 
-    handleOrientationChange = ({ window }: { window: WindowDimensions }) => {
-      const isLandscape = isOrientationLandscape(window);
-      this.setState({ isLandscape });
+    handleOrientationChange = orientation => {
+      InteractionManager.runAfterInteractions(() => {
+        this.setState({ isLandscape: orientation === "LANDSCAPE" });
+      });
     };
 
     render() {
