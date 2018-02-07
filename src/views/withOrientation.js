@@ -66,7 +66,7 @@ export default function<T: {}>(
     }
 
     handleOrientationChange = orientation => {
-      if (_isTablet() === true) {
+      if (this._isTablet() === true) {
         setTimeout(() => {
           this.setState({ isLandscape: orientation === "LANDSCAPE" });
         }, 0);
