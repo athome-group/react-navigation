@@ -18,6 +18,7 @@ import HeaderBackButton from './HeaderBackButton';
 import HeaderStyleInterpolator from './HeaderStyleInterpolator';
 import SafeAreaView from '../SafeAreaView';
 import withOrientation from '../withOrientation';
+import DeviceInfo from "react-native-device-info";
 
 import type {
   NavigationScene,
@@ -59,6 +60,25 @@ class Header extends React.PureComponent<Props, State> {
   state = {
     widths: {},
   };
+
+  _isTablet() {
+    const isTablet = NativeModules.RNDeviceInfo.isTablet;
+    if (isTablet === true) {
+      let width = Dimensions.get("window").width;
+      const height = Dimensions.get("window").height;
+      const widhtValid = 375 + 250; // dataTabletWidth  +  galleryTabletWidth minimum
+
+      if (width > height) {
+        width = height;
+      }
+
+      if (width >= widhtValid) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
 
   _getHeaderTitleString(scene: NavigationScene): ?string {
     const sceneOptions = this.props.getScreenDetails(scene).options;
@@ -321,7 +341,8 @@ class Header extends React.PureComponent<Props, State> {
 
     const { options } = this.props.getScreenDetails(scene);
     const { headerStyle } = options;
-    const appBarHeight = Platform.OS === 'ios' ? (isLandscape ? 65 : 44) : 56;
+    const iOSLandscapeHeight = this._isTablet() ? 33 : 65;
+    const appBarHeight = Platform.OS === 'ios' ? (isLandscape ? iOSLandscapeHeight : 44) : 56;
     const containerStyles = [
       styles.container,
       {
