@@ -62,7 +62,7 @@ class Header extends React.PureComponent<Props, State> {
   };
 
   _isTablet() {
-    const isTablet = NativeModules.RNDeviceInfo.isTablet;
+    const isTablet = DeviceInfo.isTablet();
     if (isTablet === true) {
       let width = Dimensions.get("window").width;
       const height = Dimensions.get("window").height;
