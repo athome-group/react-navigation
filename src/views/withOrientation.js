@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Dimensions, InteractionManager } from 'react-native';
 import hoistNonReactStatic from 'hoist-non-react-statics';
 import Orientation from 'react-native-orientation';
+import DeviceInfo from "react-native-device-info";
 
 type WindowDimensions = {
   width: number,
@@ -34,6 +35,26 @@ export default function<T: {}>(
       this.state = { isLandscape };
     }
 
+    _isTablet() {
+      const isTablet = DeviceInfo.isTablet();
+      if (isTablet === true) {
+        let width = Dimensions.get("window").width;
+        const height = Dimensions.get("window").height;
+        const widhtValid = 375 + 250; // dataTabletWidth  +  galleryTabletWidth minimum
+
+        if (width > height) {
+          width = height;
+        }
+
+        if (width >= widhtValid) {
+          return true;
+        }
+        return false;
+      }
+      return false;
+    }
+
+
     componentDidMount() {
       Orientation.addOrientationListener(this.handleOrientationChange);
 
@@ -45,9 +66,11 @@ export default function<T: {}>(
     }
 
     handleOrientationChange = orientation => {
-      setTimeout(() => {
-        this.setState({ isLandscape: orientation === "LANDSCAPE" });
-      }, 0);
+      if (_isTablet() === true) {
+        setTimeout(() => {
+          this.setState({ isLandscape: orientation === "LANDSCAPE" });
+        }, 0);
+      }
     };
 
     render() {
